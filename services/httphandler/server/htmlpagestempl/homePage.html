@@ -1,0 +1,39 @@
+<head>
+
+</head>
+<body>
+    <h1>Send Message to galand message processor!</h1>
+
+    <form method="post" id="form">
+        <label for="textfield">Place your text here</label><br>
+        <input type="text" id="textfield" name="text"><br>
+        <input type="submit" >
+    </form>
+
+    <script>
+        document.getElementById('form').addEventListener("submit", submit)
+
+        function submit(e){
+            e.preventDefault();
+            console.log("custom submit")
+
+            fetch("/", {
+                method: "POST",
+                body: document.getElementById('textfield').value
+            }).then(
+                (response) => {
+                    console.log("sended: "+document.getElementById('textfield').value)
+                    return response.text()
+                }
+            ).then(
+                (data) =>{
+                    alert(data)
+                    console.log("server response: \n"+data)
+                }
+            )
+
+            console.log("custom submit ended")
+        }
+    </script>
+    
+</body>

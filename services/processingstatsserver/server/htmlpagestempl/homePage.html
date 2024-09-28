@@ -1,0 +1,88 @@
+<head>
+
+    <style>
+        table, th, td {
+            border: 1px solid;
+        }
+    </style>
+
+</head>
+<body>
+    <h1>Last 100 processed messages</h1>
+    <h3>Processed messages:</h3>
+    
+    
+    <table id="table">
+        <tr>
+            <td>Timestamp</td><td>Topic Name</td><td>Partition</td><td>Partition Offset</td>
+        </tr>
+    </table>
+
+    <script>
+
+        const host = window.location.host
+        const table = document.getElementById("table")
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        const startid = urlParams.get('startid')
+        const rowCount = urlParams.get('rowcount') 
+
+
+        const url = `http://${host}/api/getpage/?startid=${startid}&rowcount=${rowCount}`
+
+        fetch(url)
+        .then((resp) => {
+            console.log(resp)
+            let r = resp.json()
+            console.log(r)
+            return r
+        })
+        .then((data) => printRows(data))
+        
+        function printRows(data){
+            console.log(data)
+            data.forEach(elem => {
+                let row = new TableRow(
+                    elem.timestamp, 
+                    elem.topicname,
+                    elem.partition, 
+                    elem.partitionoffset,
+                )
+                table.append(createTableRow(row))
+            });
+        }
+
+        function createTableRow(tableRow){
+            let row = document.createDocumentFragment()
+            let tr = document.createElement("tr")
+
+            const createColumn = (text) => {
+                td = document.createElement("td")
+                td.innerHTML = text
+                return td
+            }
+            
+            tr.append(
+                createColumn(tableRow.timestamp),
+                createColumn(tableRow.topicname),
+                createColumn(tableRow.partition),
+                createColumn(tableRow.partitionoffset)
+            )
+
+            row.appendChild(tr)
+            return row
+        }
+
+        function TableRow(timestamp, topicname, partition, partitionoffset){
+            this.timestamp = timestamp
+            this.topicname = topicname
+            this.partition = partition
+            this.partitionoffset = partitionoffset
+            return this
+        }
+    </script>
+
+    
+</body>

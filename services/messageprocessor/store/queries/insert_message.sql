@@ -1,0 +1,1 @@
+INSERT INTO processed_messages VALUES (default, $1, $2, $3, $4)
